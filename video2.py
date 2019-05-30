@@ -6,6 +6,7 @@ import numpy as np
 from sklearn import preprocessing, svm
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
+import pickle
 
 style.use('ggplot')
 
@@ -37,6 +38,13 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 clf = LinearRegression(n_jobs=-1)
 # clf = svm.SVR(kernel='linear')
 clf.fit(X_train, y_train)
+with open('linearregression.pickle','wb') as f:
+    pickle.dump(clf, f)
+
+# %%
+
+pickle_in = open('linearregression.pickle','rb')
+clf = pickle.load(pickle_in)
 accuracy = clf.score(X_test,y_test)
 
 forcast_set = clf.predict(X_lately)
@@ -50,9 +58,9 @@ one_day = 86400
 next_unix = last_unix + one_day
 
 for i in forcast_set:
-    next_day = datetime.datetime.fromtimestamp(next_unix)
+    next_date = datetime.datetime.fromtimestamp(next_unix)
     next_unix += one_day
-    df.loc[next_date] = [np.nan for _ in range(df.colums-1)] + [i]
+    df.loc[next_date] = [np.nan for _ in range(len(df.columns) - 1)] + [i]
 df['Adj. Close'].plot()
 df['Forcast'].plot()
 plt.legend(loc=4)
