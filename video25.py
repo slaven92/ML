@@ -36,7 +36,7 @@ class Support_Vector_Machine:
         step_sizes = [self.max_feature_value * 0.1,
                       self.max_feature_value * 0.01,
                       # point of expense:
-                      # self.max_feature_value * 0.001,
+                      self.max_feature_value * 0.001,
                       ]
 
 
@@ -62,13 +62,14 @@ class Support_Vector_Machine:
                         # weakest link in the SVM fundamentally
                         # SMO attempts to fix this a bit
                         # yi(xi.w+b) >= 1
-                        #
-                        # #### add a break here later..
                         for i in self.data:
+                            if not found_option:
+                                break
                             for xi in self.data[i]:
                                 yi=i
                                 if not yi*(np.dot(w_t,xi)+b) >= 1:
                                     found_option = False
+                                    break
                                     #print(xi,':',yi*(np.dot(w_t,xi)+b))
 
                         if found_option:
@@ -87,10 +88,10 @@ class Support_Vector_Machine:
             self.b = opt_choice[1]
             latest_optimum = opt_choice[0][0]+step*2
 
-        for i in self.data:
-            for xi in self.data[i]:
-                yi=i
-                print(xi,':',yi*(np.dot(self.w,xi)+self.b))
+        # for i in self.data:
+        #     for xi in self.data[i]:
+        #         yi=i
+        #         print(xi,':',yi*(np.dot(self.w,xi)+self.b))
 
     def predict(self,features):
         # sign( x.w+b )
@@ -100,7 +101,7 @@ class Support_Vector_Machine:
         return classification
 
     def visualize(self):
-        [[self.ax.scatter(x[0],x[1],s=100,color=self.colors[i]) for x in data_dict[i]] for i in data_dict]
+        # [[self.ax.scatter(x[0],x[1],s=100,color=self.colors[i]) for x in data_dict[i]] for i in data_dict]
 
         # hyperplane = x.w+b
         # v = x.w+b
@@ -113,7 +114,6 @@ class Support_Vector_Machine:
         datarange = (self.min_feature_value*0.9,self.max_feature_value*1.1)
         hyp_x_min = datarange[0]
         hyp_x_max = datarange[1]
-
         # (w.x+b) = 1
         # positive support vector hyperplane
         psv1 = hyperplane(hyp_x_min, self.w, self.b, 1)
@@ -143,7 +143,7 @@ data_dict = {-1:np.array([[1,7],
                          [7,3],])}
 # %%
 svm = Support_Vector_Machine()
-svm.fit(data=data_dict)
+%time svm.fit(data=data_dict)
 
 predict_us = [[0,10],
               [1,3],
