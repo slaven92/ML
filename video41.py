@@ -6,7 +6,7 @@ from sklearn.datasets.samples_generator import make_blobs
 
 # %%
 # X = np.array([[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11],[8,2],[10,2],[9,3]])
-X, y = make_blobs(n_samples=70, centers=3, n_features=2)
+X, y = make_blobs(n_samples=70, centers=4, n_features=2)
 colors = 10 * ["g", "r", "c", "b", "k", "y "]
 
 class Mean_Shift():
