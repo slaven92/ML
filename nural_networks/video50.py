@@ -1,5 +1,5 @@
 import tensorflow as tf
-from nural networks/video48 import create_feature_sets_and_labels
+from nural_networks.video48 import create_feature_sets_and_labels
 
 n_nodes_hl1 = 500
 n_nodes_hl2 = 500
