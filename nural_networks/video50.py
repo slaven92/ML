@@ -1,20 +1,23 @@
 import tensorflow as tf
 from nural_networks.video48 import create_feature_sets_and_labels
+import numpy as np
+
+train_x, train_y, test_x, test_y = create_feature_sets_and_labels('nural_networks/pos.txt', 'nural_networks/neg.txt')
 
 n_nodes_hl1 = 500
-n_nodes_hl2 = 500
 n_nodes_hl3 = 500
+n_nodes_hl2 = 500
 
-n_classes = 10
+n_classes = 2
 batch_size = 100
 
-x = tf.placeholder('float', [None, 784])
+x = tf.placeholder('float', [None, len(train_x[0])])
 y = tf.placeholder('float')
 
 
 def nural_network_model(data):
     hidden_1_layer = {'weights': tf.Variable(tf.random_normal(
-        [784, n_nodes_hl1])), 'biases': tf.Variable(tf.random_normal([n_nodes_hl1]))}
+        [len(train_x[0]), n_nodes_hl1])), 'biases': tf.Variable(tf.random_normal([n_nodes_hl1]))}
 
     hidden_2_layer = {'weights': tf.Variable(tf.random_normal(
         [n_nodes_hl1, n_nodes_hl2])), 'biases': tf.Variable(tf.random_normal([n_nodes_hl2]))}
@@ -51,14 +54,22 @@ def train_nural_network(x):
 
         for epoch in range(hm_epochs):
             epoch_loss = 0
-            for _ in range(int(mnist.train.num_examples/batch_size)):
-                epoch_x, epoch_y = mnist.train.next_batch(batch_size)
-                _, c = sess.run([optimizer, cost], feed_dict={x: epoch_x, y: epoch_y})
+            i = 0
+            while i < len(train_x):
+                start = i
+                end = i + batch_size
+
+                batch_x = np.array(train_x[start:end])
+                batch_y = np.array(train_y[start:end])
+
+
+                _, c = sess.run([optimizer, cost], feed_dict={x: batch_x, y: batch_y})
                 epoch_loss += c
-            print('Epoch', epoch, ' completed out of ', hm_epochs,' loss: ', epoch_loss)
+                i += batch_size
+            print('Epoch', epoch + 1, ' completed out of ', hm_epochs,' loss: ', epoch_loss)
         correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
 
         accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-        print('Accuracy: ', accuracy.eval({x:mnist.test.images, y: mnist.test.labels}))
+        print('Accuracy: ', accuracy.eval({x:test_x, y: test_y}))
 
 train_nural_network(x)
