@@ -1,3 +1,7 @@
-/catVSdogs/
+/catVSdogs/pics/
+
+/log/
+
+*.npy
 
 *.jpg
