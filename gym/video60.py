@@ -10,7 +10,7 @@ from collections import Counter
 LR = 1e-3
 env = gym.make('CartPole-v0')
 env.reset()
-goal_steps = 200
+goal_steps = 500
 score_requirement = 50
 initial_games = 10000
 
